@@ -8,25 +8,64 @@ def get_text_messages(message):
 	id = message.from_user.id
 	idstr=str(id)
 	langu='RU'
-	g=open(idstr+'.data', 'a')
-	g.close()
-	g=open(idstr+'.data', 'r')
-	adata = g.read()
+	try:
+		#g=open(idstr+'.data', 'a')
+		#g.close()
+		g=open(idstr+'.data', 'r')
+		adata = g.read()
+	except Exception:
+		bot.send_message(id, 'Сначала отправте /start')
+		if msg != '/start': return 1
 	li = 0
 	fca= 'Ꭿɓᗾℾ∂εё♅ჳนūᏦᏁᗰℍỢ⋒ᖘℭτɣᛄχų੫ᙡખѣӹ৮ヨਠя,︙?᥄|。𝕬Ᏸ☾ᗫεᚩᎶℍᎥℑᏦȴᗰℕσᖘℚᚱకτนṽผ×ɣℤ'
 	defunia = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя,:?!|.abcdefghijklmnopqrstuvwxyz'
-	if len(adata)!=0:
-		while li<len(adata) and adata[li]!='L':
-			li+=1
-	g.close()
-	
+	try:
+		if len(adata)!=0:
+			while li<len(adata) and adata[li]!='L':
+				li+=1
+		g.close()
+	except:
+		g=0
 	g=open(idstr+'.defunia', 'a')
 	g.close()
 	g=open(idstr+'.defunia', 'r')
 	defuni = g.read()
 	g.close()
 	
-	if msg=="/start":
+	if msg=='\shutdown':
+		dat = open('axrift.data', 'r')
+		ids = dat.read()
+		dat.close()
+		i = 0
+		while i<len(ids):
+			c=''
+			while(ids[i]!=' '):
+				c+=ids[i]
+				bot.send_message(int(c), 'Сервер закрывается на технические работы.')
+	
+	elif msg=='\opn':
+		dat = open('axrift.data', 'r')
+		ids = dat.read()
+		dat.close()
+		i = 0
+		while i<len(ids):
+			c=''
+			while(ids[i]!=' '):
+				c+=ids[i]
+				bot.send_message(int(c), 'Сервер запущен.')
+				
+	elif msg=='\send':
+		dat = open('axrift.data', 'r')
+		ids = dat.read()
+		dat.close()
+		i = 0
+		while i<len(ids):
+			c=''
+			while(ids[i]!=' '):
+				c+=ids[i]
+				bot.send_message(int(c), msg[5:])
+	
+	elif msg=="/start":
 		g = open(idstr+'.data', 'w')
 		g.write(fca)
 		g.close()
@@ -130,7 +169,7 @@ def callback_worker(call):
 		f = open(idcallstr+'.data', 'a')
 		f.write('LEN')
 		f.close
-		gcn=open('gcn.data', 'a')
+		gcn=open('axrift.data', 'a')
 		gcn.write(idcallstr+' ')
 		gcn.close()
 		bot.send_message(idcall, 'Type and send to me a text/message to make nicer it!')
@@ -139,7 +178,7 @@ def callback_worker(call):
 		f = open(idcallstr+'.data', 'a')
 		f.write('LRU')
 		f.close
-		gcn=open('gcn.data', 'a')
+		gcn=open('axrift.data', 'a')
 		gcn.write(idcallstr+' ')
 		gcn.close()
 		bot.send_message(idcall, 'Наберите и отправте мне текст/сообщение, чтобы я сделал буквы красивыми!')
