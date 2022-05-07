@@ -1,7 +1,7 @@
 import telebot
 from telebot import types
 import time
-bot = telebot.TeleBot('5043884219:AAFWuoaG-ysmOCi0jcm75nADCIZeVD7V1S0')
+bot = telebot.TeleBot('[TOKEN]')
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
