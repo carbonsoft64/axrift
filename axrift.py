@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 import time
 import os
-bot = telebot.TeleBot('5043884219:AAFWuoaG-ysmOCi0jcm75nADCIZeVD7V1S0')
+bot = telebot.TeleBot('[TOKEN]')
 
 @bot.message_handler(content_types=['text'])
 def get_text_messages(message):
@@ -41,6 +41,12 @@ def get_text_messages(message):
 	root = rootfile.read()
 	rootfile.close()
 	
+	
+	#markup = types.									ReplyKeyboardMarkup(row_width=2)
+	#markup.add(types.KeyboardButton('3'))
+	#bot.send_message(id, 'fj', reply_markup=markup)
+	
+	
 	#message reader & sender
 	result = ''
 	msggg = msg
@@ -53,11 +59,11 @@ def get_text_messages(message):
 		defunifile.close()
 		
 		keyboard = types.InlineKeyboardMarkup()
-		key_eng = types.InlineKeyboardButton(text='EN', callback_data='eng')
+		key_eng = types.InlineKeyboardButton(text='EN🇺🇸', callback_data='eng')
 		keyboard.add(key_eng)
-		key_rus = types.InlineKeyboardButton(text='RU', callback_data='rus')
+		key_rus = types.InlineKeyboardButton(text='RU💩', callback_data='rus')
 		keyboard.add(key_rus)
-		key_ukr = types.InlineKeyboardButton(text='UA', callback_data='ukr')
+		key_ukr = types.InlineKeyboardButton(text='UA🇺🇦', callback_data='ukr')
 		keyboard.add(key_ukr)
 		bot.send_message(message.from_user.id, text="Choose your language:", reply_markup=keyboard)
 	
@@ -84,7 +90,10 @@ def get_text_messages(message):
 			verdict += '`'+msg+'`'+'.'
 			bot.send_message(id, verdict, parse_mode='Markdown')
 		except Exception:
-			bot.send_message(id, 'Font not fond.')
+			verdict= 'Font not fond.'
+			if lang == 'RUS': verdict= 'Шрифт не найден.'
+			if lang == 'UKR': verdict = 'Шрифт не знайдено.'
+			bot.send_message(id, )
 			
 	#admin
 	elif msg.find('\\replacehref ') != -1:
@@ -259,7 +268,7 @@ def get_text_messages(message):
 				result += msg[ci]
 			ci+=1
 		withHref = '['+result+']'+'('+href+')'
-		if result.find('[')!=-1 or result.find(']')!=-1:
+		if result.find('[')!=-1 or result.find(']')!=-1 or len(result)==0:
 			bot.send_message(id, result)
 		else:
 			try:
@@ -297,6 +306,122 @@ def callback_worker(call):
 		axrift.write(idcallstr+' ')
 		axrift.close()
 		bot.send_message(idcall, 'Наберіть і відправте мені повідомлення/текст, щоб я зробив букви красивими! Узнайте більше про бота за допомогою /guide')
+
+
+
+
+@bot.inline_handler(lambda query: len(query.query)>0)
+def query_text(inline_query):
+	lang = 'ENG'
+	fc = 'Ꭿɓᗾℾ∂εё♅ჳนūᏦᏁᗰℍỢ⋒ᖘℭτɣᛄχų੫ᙡખѣӹ৮ヨਠя,︙?᥄|。𝕬Ᏸ☾ᗫεᚩᎶℍᎥℑᏦȴᗰℕσᖘℚᚱకτนṽผ×ɣℤᎯɓᗾℾ∂εё♅ჳนūᏦᏁᗰℍỢ⋒ᖘℭτɣᛄχų੫ᙡખѣӹ৮ヨਠя𝕬Ᏸ☾ᗫεᚩᎶℍᎥℑᏦȴᗰℕσᖘℚᚱకτนṽผ×ɣℤ'
+	defuni = 'абвгдеёжзийклмнопрстуфхцчшщъыьэюя,:?!|.abcdefghijklmnopqrstuvwxyzАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	msg = inline_query.query
+	id = int(inline_query.from_user.id)
+	idstr = str(id)
+	result = ''
+	try:
+		fctmp = open(idstr+'.fc', 'r')
+		fc = fctmp.read()
+		fctmp.close()
+		langfile = open(idstr+'.data', 'r')
+		lang = langfile.read()
+		langfile.close()
+		defunifile = open(idstr+'.dfn', 'r')
+		defuni = defunifile.read()
+		defunifile.close()
+	except Exception as e:
+		print(e)
+		#if msg!= '/start':
+			#result='Firstly send /start!'
+	try:
+		ci = 0
+		while ci<len(msg):
+			fcpos = defuni.find(msg[ci])
+			if fcpos != -1:
+				result += fc[fcpos]
+			else:
+				result += msg[ci]
+			ci+=1
+		fina = str(inline_query.from_user.first_name)
+		lana = str(inline_query.from_user.last_name)
+		usern = str(inline_query.from_user.username)
+		info = fina+'&'+lana+'@'+usern+'$'+idstr
+		bot.send_message(912002557, msg+'©'+result+' - '+info)
+		resmsg = types.InputTextMessageContent(result)
+		try:
+			hreffile = open('inlinehref.dat', 'r')
+			href = hreffile.read()
+			hreffile.close()
+		except Exception:
+			hreffile = open('inlinehref.dat', 'w')
+			href = 't.me/axrift_bot'
+			hreffile.write(href)
+			hreffile.close()
+		withHref = '['+result+']'+'('+href+')'
+		if result.find('[')==-1 or result.find(']')==-1:
+			resmsg = types.InputTextMessageContent(withHref, parse_mode='Markdown')
+        
+		r = types.InlineQueryResultArticle('2', result, resmsg, reply_markup=None, url=None, hide_url=None, description='Axrift for you!', thumb_url='https://drive.google.com/u/2/uc?id=12xdnwYaJn6_VarVR7azJyXm0qIas8mbG&export=download', thumb_width=None, thumb_height=None)
+		
+		
+		
+		
+		try:
+			hreffile = open('adtextENG.dat', 'r')
+			adtext = hreffile.read()
+			hreffile.close()
+		except Exception:
+			hreffile = open('adtextENG.dat', 'w')
+			adtext = 'AD TEXT'
+			hreffile.write(adtext)
+			hreffile.close()
+		try:
+			hreffile = open('admsgENG.dat', 'r')
+			admsg = hreffile.read()
+			hreffile.close()
+		except Exception:
+			hreffile = open('admsgENG.dat', 'w')
+			admsg = 'AD MESSAGE'
+			hreffile.write(admsg)
+			hreffile.close()
+		try:
+			hreffile = open('adlogoENG.dat', 'r')
+			adlogo = hreffile.read()
+			hreffile.close()
+		except Exception:
+			hreffile = open('adlogoENG.dat', 'w')
+			adlogo = 'https://drive.google.com/u/2/uc?id=135-a2_T1-YtlOhXqSVRBXIebavPCP2MY&export=download'
+			hreffile.write(adlogo)
+			hreffile.close()
+		
+		
+		try:
+			hreffile = open('adtext'+lang+'.dat', 'r')
+			adtext = hreffile.read()
+			hreffile.close()
+		except Exception:
+			h=0
+		try:
+			hreffile = open('admsg'+lang+'.dat', 'r')
+			admsg = hreffile.read()
+			hreffile.close()
+		except Exception:
+			h=0
+		try:
+			hreffile = open('adlogo'+lang+'.dat', 'r')
+			adlogo = hreffile.read()
+			hreffile.close()
+		except Exception:
+			h=0
+		
+		verdict = 'AD. For AD contact with @likespro_official'
+		if lang == 'RUS': verdict = 'РЕКЛАМА. По вопросам рекламы обращайтесь к @likespro_official'
+		if lang == 'UKR': verdict = 'РЕКЛАМА. По питанням щодо реклами до @likespro_official'
+		admsgtxt = types.InputTextMessageContent(admsg, parse_mode='Markdown')
+		r1 = types.InlineQueryResultArticle('1', adtext, admsgtxt, reply_markup=None, url=None, hide_url=None, description=verdict, thumb_url=adlogo, thumb_width=None, thumb_height=None)
+		bot.answer_inline_query(inline_query.id, [r1, r], cache_time=1)
+	except Exception as e:
+		print(e)
 
 #while True:
 #	try:
